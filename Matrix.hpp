@@ -14,6 +14,7 @@
 #include <iostream>
 #include <iomanip>
 #include <initializer_list>
+#include <cmath>
 
 class Matrix{
     std::vector<double> elements_;
@@ -35,13 +36,18 @@ public:
     
     Matrix transpose();
     
+    double mag();
+    double dot(Matrix);
+    
     double operator()(int,int);
     Matrix& operator=(std::initializer_list<double>);
+    Matrix& operator=(Matrix);
     Matrix operator+(Matrix);
     Matrix operator-(Matrix);
     Matrix operator*(Matrix);
     Matrix operator*(double);
-
+    Matrix operator/(double);
+    
 };
 
 Matrix projection(Matrix v_point, Matrix v_line);

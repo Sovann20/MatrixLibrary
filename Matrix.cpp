@@ -9,13 +9,13 @@
 #include "Matrix.hpp"
 
 Matrix::Matrix(unsigned int rows, unsigned int cols)
-    : rows_(rows), cols_(cols), size(rows_*cols_)
+: rows_(rows), cols_(cols), size(rows_*cols_)
 {
     elements_.resize(rows_*cols_);
 }
 
 Matrix::Matrix()
-    : rows_(0), cols_(0), size(0)
+: rows_(0), cols_(0), size(0)
 {
     
 }
@@ -54,20 +54,27 @@ void Matrix::print()
         }
     }
     std::cout<<"\n"<<std::endl;
-
+    
 }
 
 Matrix Matrix::transpose()
 {
-    int i, j;
     Matrix transpose = Matrix(cols_, rows_);
-    for( i = 0; i < rows_; ++i ){
-        for( j = 0; j < cols_; ++ j ){
-            transpose.elements_[transpose.rows_*j+i] = elements_[rows_*j+i];
-        }
-    }
+    
+    transpose.elements_ = elements_;
     
     return transpose;
+}
+
+double Matrix::mag()
+{
+    int i;
+    double sum = 0;
+    for(i = 0; i < elements_.size(); ++i) {
+        sum += elements_[i]*elements_[i];
+    }
+    
+    return sqrt(sum);
 }
 
 int Matrix::get_rows()
@@ -103,6 +110,22 @@ Matrix& Matrix::operator=(std::initializer_list<double> list)
     }
     else {
         elements_ = list;
+        return *this;
+    }
+}
+
+Matrix& Matrix::operator=(Matrix m)
+{
+    if(m.size != size)
+    {
+        size = m.size;
+        cols_ = m.cols_;
+        rows_ = m.rows_;
+        elements_ = m.elements_;
+        return *this;
+    }
+    else {
+        elements_ = m.elements_;
         return *this;
     }
 }
@@ -156,7 +179,8 @@ Matrix Matrix::operator*(Matrix rhs_m)
     }
     else if( rows_ == rhs_m.rows_ && cols_ == rhs_m.cols_ && ( cols_ == 1 || rows_ == 1) )
     {
-        int i,j,sum;
+        int i,j;
+        double sum;
         Matrix m_to_return = Matrix(1, 1);
         sum = 0;
         for(i = 0; i < rows_; ++i) {
@@ -175,7 +199,8 @@ Matrix Matrix::operator*(Matrix rhs_m)
     
     Matrix m_to_return = Matrix(rows_, rhs_m.cols_);
     
-    int i, j, k, sum, count;
+    int i, j, k, count;
+    double sum;
     count = 0;
     for( i = 0; i < rows_; ++i ) {
         for( j = 0; j < rhs_m.cols_; ++j ) {
@@ -191,7 +216,7 @@ Matrix Matrix::operator*(Matrix rhs_m)
     if(count == 1){
         m_to_return.resize(1, 1);
     }
-
+    
     return m_to_return;
 }
 
@@ -206,6 +231,24 @@ Matrix Matrix::operator*(double c)
     }
     return m_to_return;
 }
+
+Matrix Matrix::operator/(double c)
+{
+    int i, j;
+    Matrix m_to_return = Matrix(rows_, cols_);
+    for( i = 0; i < rows_; ++i ) {
+        for(j = 0; j < cols_; ++j){
+            if(c > 0){
+                m_to_return.place(elements_[rows_*i+j]/c, i, j);
+            }
+            else {
+                m_to_return.place(0, i, j);
+            }
+        }
+    }
+    return m_to_return;
+}
+
 
 Matrix projection(Matrix v_point, Matrix v_line)
 {
@@ -222,6 +265,21 @@ Matrix projection(Matrix v_point, Matrix v_line)
     proj_m = (v_point*v_line_t) - (v_line*v_point)*iden_matrix;
     
     return proj_m;
+}
+
+double Matrix::dot(Matrix rhs) {
+    int i;
+    double product = 0;
+    
+    if(elements_.size() != elements_.size()) {
+        throw std::runtime_error("The columns and rows must be equivalent for dot product");
+    }
+    
+    for( i = 0; i < size; ++i) {
+        product += elements_[i]*rhs.elements_[i];
+    }
+    
+    return product;
 }
 
 
