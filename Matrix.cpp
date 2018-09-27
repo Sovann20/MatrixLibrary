@@ -34,7 +34,7 @@ void Matrix::place(double data, int x, int y)
     }
     else
     {
-        elements_[rows_*y + x] = data;
+        elements_[cols_*x + y] = data;
     }
 }
 
@@ -50,7 +50,7 @@ void Matrix::print()
     for( i = 0; i < rows_; ++i ) {
         std::cout<<"\n";
         for( j = 0; j < cols_; ++j ) {
-            std::cout<<std::setw(3)<<elements_[rows_*j+i]<<" ";
+            std::cout<<std::setw(10)<<elements_[cols_*i+j]<<" ";
         }
     }
     std::cout<<"\n"<<std::endl;
@@ -98,7 +98,7 @@ double Matrix::operator()(int x, int y)
         throw std::out_of_range("Provided indicies out of range.");
     }
     else {
-        return elements_[rows_*y + x];
+        return elements_[cols_*x + y];
     }
 }
 
@@ -247,24 +247,6 @@ Matrix Matrix::operator/(double c)
         }
     }
     return m_to_return;
-}
-
-
-Matrix projection(Matrix v_point, Matrix v_line)
-{
-    int iden_size = v_point.get_rows();
-    int i;
-    Matrix iden_matrix = Matrix(iden_size, iden_size);
-    
-    for( i = 0; i < iden_size; ++i ) {
-        iden_matrix.place(1, i, i);
-    }
-    
-    Matrix proj_m = Matrix(iden_size, iden_size);
-    Matrix v_line_t = v_line.transpose();
-    proj_m = (v_point*v_line_t) - (v_line*v_point)*iden_matrix;
-    
-    return proj_m;
 }
 
 double Matrix::dot(Matrix rhs) {

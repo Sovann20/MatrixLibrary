@@ -17,11 +17,13 @@
 #include <cmath>
 
 class Matrix{
-    std::vector<double> elements_;
+//    std::vector<double> elements_;
     unsigned int rows_, cols_;
     int size;
     
 public:
+    std::vector<double> elements_;
+
     Matrix(unsigned int, unsigned int);
     Matrix();
     ~Matrix();
@@ -49,7 +51,5 @@ public:
     Matrix operator/(double);
     
 };
-
-Matrix projection(Matrix v_point, Matrix v_line);
 
 #endif
